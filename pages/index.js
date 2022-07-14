@@ -12,6 +12,8 @@ export default function Home() {
   const [joinedWhitelist, setJoinedWhitelist] = useState(false);
   // loading is set to true when we are waiting for a transaction to get mined
   const [loading, setLoading] = useState(false);
+
+  const [alertBox, setAlertBox] = useState(false);
   // numberOfWhitelisted tracks the number of addresses's whitelisted
   const [numberOfWhitelisted, setNumberOfWhitelisted] = useState(0);
   // Create a reference to the Web3 Modal (used for connecting to Metamask) which persists as long as the page is open
@@ -38,8 +40,10 @@ export default function Home() {
     // If user is not connected to the Rinkeby network, let them know and throw an error
     const { chainId } = await web3Provider.getNetwork();
     if (chainId !== 4) {
-      window.alert("Change the network to Rinkeby");
+      console.log("not rinkeby");
+      setAlertBox(true);
       throw new Error("Change network to Rinkeby");
+      
     }
 
     if (needSigner) {
@@ -135,11 +139,22 @@ export default function Home() {
       // When used for the first time, it prompts the user to connect their wallet
       await getProviderOrSigner();
       setWalletConnected(true);
+      setAlertBox(false);
 
       checkIfAddressInWhitelist();
       getNumberOfWhitelisted();
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const alertErr = () => {
+    if(alertBox){
+      return (
+        <div className={styles.buttonr}>
+          Change the network to Rinkeby
+        </div>
+      )
     }
   };
 
@@ -198,9 +213,13 @@ export default function Home() {
       </Head>
       <div className={styles.main}>
         <div>
+          {alertErr()}
           <h1 className={styles.title}>Welcome to Crypto Devs!</h1>
           <div className={styles.description}>
             Its an NFT collection for developers in Crypto.
+          </div>
+          <div className={styles.description}>
+              Get Witlisted to be the GOs.
           </div>
           <div className={styles.description}>
             {numberOfWhitelisted} have already joined the Whitelist
@@ -213,7 +232,7 @@ export default function Home() {
       </div>
 
       <footer className={styles.footer}>
-        Made with &#10084; by Crypto Devs
+        Made with &#10084; by Ahmadou
       </footer>
     </div>
   );
