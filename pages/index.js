@@ -39,10 +39,10 @@ export default function Home() {
 
     // If user is not connected to the Rinkeby network, let them know and throw an error
     const { chainId } = await web3Provider.getNetwork();
-    if (chainId !== 4) {
+    if (chainId !== 1116) {
       console.log("not rinkeby");
       setAlertBox(true);
-      throw new Error("Change network to Rinkeby");
+      throw new Error("Change network to CoreChain");
       
     }
 
@@ -68,7 +68,7 @@ export default function Home() {
         signer
       );
       // call the addAddressToWhitelist from the contract
-      const tx = await whitelistContract.addAddressToWhitelist();
+      const tx = await whitelistContract.getWhitelist();
       setLoading(true);
       // wait for the transaction to get mined
       await tx.wait();
@@ -97,8 +97,11 @@ export default function Home() {
         provider
       );
       // call the numAddressesWhitelisted from the contract
-      const _numberOfWhitelisted = await whitelistContract.numAddressesWhitelisted();
-      setNumberOfWhitelisted(_numberOfWhitelisted);
+      const _numberOfWhitelisted = await whitelistContract.getTotal();
+      const converted = await _numberOfWhitelisted.toNumber()
+      console.log(_numberOfWhitelisted)
+      setNumberOfWhitelisted(converted);
+
     } catch (err) {
       console.error(err);
     }
@@ -120,9 +123,10 @@ export default function Home() {
       );
       // Get the address associated to the signer which is connected to  MetaMask
       const address = await signer.getAddress();
+      console.log(address)
       // call the whitelistedAddresses from the contract
-      const _joinedWhitelist = await whitelistContract.whitelistedAddresses(
-        address
+      const _joinedWhitelist = await whitelistContract.whitelisted(
+        
       );
       setJoinedWhitelist(_joinedWhitelist);
     } catch (err) {
@@ -152,7 +156,7 @@ export default function Home() {
     if(alertBox){
       return (
         <div className={styles.buttonr}>
-          Change the network to Rinkeby
+          Change the network to Core Chain
         </div>
       )
     }
@@ -166,7 +170,7 @@ export default function Home() {
       if (joinedWhitelist) {
         return (
           <div className={styles.description}>
-            Thanks for joining the Whitelist!
+          🙌  Thanks for joining the Whitelist!
           </div>
         );
       } else if (loading) {
@@ -174,14 +178,14 @@ export default function Home() {
       } else {
         return (
           <button onClick={addAddressToWhitelist} className={styles.button}>
-            Join the Whitelist
+          🤝 Join the Whitelist
           </button>
         );
       }
     } else {
       return (
         <button onClick={connectWallet} className={styles.button}>
-          Connect your wallet
+          🔌 Connect your wallet
         </button>
       );
     }
@@ -204,35 +208,39 @@ export default function Home() {
     }
   }, [walletConnected]);
 
+  
+
+
   return (
     <div>
       <Head>
-        <title>Whitelist Dapp</title>
+        <title>Flame Whitelist</title>
         <meta name="description" content="Whitelist-Dapp" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.main}>
         <div>
           {alertErr()}
-          <h1 className={styles.title}>Welcome to Crypto Devs!</h1>
+          <h1 className={styles.title}>👋 Hey Flamer🔥🔥!</h1>
+          <h1 className={styles.title}>Welcome to FlameFinance WhiteList!</h1>
           <div className={styles.description}>
-            Its an NFT collection for developers in Crypto.
+            The Long Awaited $Flame Token IFO is Here.
           </div>
           <div className={styles.description}>
-              Get Witlisted to be the GOs.
+              Get Yourself Whitelisted to be Part.
           </div>
           <div className={styles.description}>
-            {numberOfWhitelisted} have already joined the Whitelist
+            {numberOfWhitelisted} Flamers have already joined the Whitelist
           </div>
           {renderButton()}
         </div>
         <div>
-          <img className={styles.image} src="./crypto-devs1.svg" />
+          <img className={styles.image} src="./coin.png" />
         </div>
       </div>
 
       <footer className={styles.footer}>
-        Made with &#10084; by Ahmadou
+        Made with &#10084; by FlameDev
       </footer>
     </div>
   );
