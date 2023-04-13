@@ -8,6 +8,8 @@ import { WHITELIST_CONTRACT_ADDRESS, abi } from "../constants";
 export default function Home() {
   // walletConnected keep track of whether the user's wallet is connected or not
   const [walletConnected, setWalletConnected] = useState(false);
+
+  const [list, setList] = useState([]);
   // joinedWhitelist keeps track of whether the current metamask address has joined the Whitelist or not
   const [joinedWhitelist, setJoinedWhitelist] = useState(false);
   // loading is set to true when we are waiting for a transaction to get mined
@@ -107,6 +109,29 @@ export default function Home() {
     }
   };
 
+  const getListOfAddress = async () => {
+    try {
+      // Get the provider from web3Modal, which in our case is MetaMask
+      // No need for the Signer here, as we are only reading state from the blockchain
+      const provider = await getProviderOrSigner();
+      // We connect to the Contract using a Provider, so we will only
+      // have read-only access to the Contract
+      const whitelistContract = new Contract(
+        WHITELIST_CONTRACT_ADDRESS,
+        abi,
+        provider
+      );
+      // call the numAddressesWhitelisted from the contract
+      const _listOfWhitelisted = await whitelistContract.getWhitelistedAddresses();
+      
+      console.log(_listOfWhitelisted)
+      setList(_listOfWhitelisted);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   /**
    * checkIfAddressInWhitelist: Checks if the address is in whitelist
    */
@@ -147,6 +172,7 @@ export default function Home() {
 
       checkIfAddressInWhitelist();
       getNumberOfWhitelisted();
+      getListOfAddres();
     } catch (err) {
       console.error(err);
     }
