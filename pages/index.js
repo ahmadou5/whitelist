@@ -263,6 +263,9 @@ export default function Home() {
         <div>
           <img className={styles.image} src="./coin.png" />
         </div>
+         <div className={styles.title}>
+          {list}
+        </div>
       </div>
 
       <footer className={styles.footer}>
