@@ -172,7 +172,7 @@ export default function Home() {
 
       checkIfAddressInWhitelist();
       getNumberOfWhitelisted();
-      getListOfAddres();
+      getListOfAddress();
     } catch (err) {
       console.error(err);
     }
